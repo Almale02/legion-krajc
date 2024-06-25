@@ -96,7 +96,6 @@ impl<'data, T: Component> View<'data> for Read<T> {
         } else {
             return ReadIter::Empty;
         };
-
         if query.is_ordered() {
             ReadIter::Grouped {
                 slices: components.iter(query.range().start, query.range().end),
@@ -130,11 +129,9 @@ impl<'a, T: Component> Iterator for ReadIter<'a, T> {
             Self::Indexed {
                 components,
                 archetypes,
-            } => {
-                archetypes
-                    .next()
-                    .map(|i| components.get(*i).map(|c| c.into()))
-            }
+            } => archetypes
+                .next()
+                .map(|i| components.get(*i).map(|c| c.into())),
             Self::Grouped { slices } => slices.next().map(|c| Some(c.into())),
             Self::Empty => None,
         }

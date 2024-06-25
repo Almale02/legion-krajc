@@ -40,7 +40,13 @@ fn query_read_entity_data() {
     }
 
     let mut query = <(Entity, Read<Pos>)>::query();
-
+    unsafe {
+        let mut counter = 0;
+        for chunk in query.iter_chunks_unchecked(&world) {
+            counter += 1;
+            dbg!(counter);
+        }
+    }
     let mut count = 0;
     for (entity, pos) in query.iter_mut(&mut world) {
         assert_eq!(expected.get(&entity).unwrap().0, *pos);

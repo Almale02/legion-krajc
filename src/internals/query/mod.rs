@@ -1,10 +1,11 @@
 use std::{collections::HashMap, marker::PhantomData, ops::Range, slice::Iter};
 
+use downcast_rs::Downcast;
 use filter::{DynamicFilter, EntityFilter, GroupMatcher};
 use parking_lot::Mutex;
 use view::{DefaultFilter, Fetch, IntoIndexableIter, IntoView, ReadOnlyFetch, View};
 
-use super::world::EntityAccessError;
+use super::{iter::indexed::TrustedRandomAccess, world::EntityAccessError};
 use crate::internals::{
     entity::Entity,
     storage::{
@@ -198,11 +199,9 @@ impl<V: IntoView, F: EntityFilter> Query<V, F> {
             };
 
             // else use an unordered result
-            cache.unwrap_or_else(|| {
-                Cache::Unordered {
-                    archetypes: Vec::new(),
-                    seen: 0,
-                }
+            cache.unwrap_or_else(|| Cache::Unordered {
+                archetypes: Vec::new(),
+                seen: 0,
             })
         });
 
@@ -376,7 +375,6 @@ impl<V: IntoView, F: EntityFilter> Query<V, F> {
         //
         // The ChunkIter only returns (unmolested) 'world references. Our virtual lifetime
         // cannot leak out of it. When the iterator is dropped, our virtual lifetime dies with it.
-
         let result = std::mem::transmute::<QueryResult<'_>, QueryResult<'world>>(result);
         let indices = std::mem::transmute::<Iter<'_, ArchetypeIndex>, Iter<'query, ArchetypeIndex>>(
             result.index.iter(),
@@ -765,7 +763,8 @@ impl<V: IntoView, F: EntityFilter> Query<V, F> {
 /// A single index in any of the slices contained in a chunk belong to the same entity.
 pub struct ChunkView<'a, F: Fetch> {
     archetype: &'a Archetype,
-    fetch: F,
+    // docs
+    pub fetch: F,
 }
 
 impl<'a, F: Fetch> ChunkView<'a, F> {
@@ -1287,5 +1286,11 @@ mod test {
             <(Entity, &usize, Option<&f32>)>::query()
                 .par_for_each(&w, |(e, x, y)| println!("{:?} {} {:?}", e, x, y));
         }
+    }
+}
+
+impl<'a, F: Fetch> ChunkView<'a, F> {
+    pub fn get_indexable(self) -> <F as IntoIndexableIter>::IntoIter {
+        self.fetch.into_indexable_iter()
     }
 }

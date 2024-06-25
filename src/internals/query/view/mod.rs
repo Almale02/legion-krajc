@@ -105,7 +105,6 @@ pub trait View<'data>: DefaultFilter + Sized {
     fn requires_permissions() -> Permissions<ComponentTypeId>;
 }
 
-#[doc(hidden)]
 pub trait IntoIndexableIter {
     type Item: Send + Sync;
     type IntoIter: Iterator<Item = Self::Item>

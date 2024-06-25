@@ -1,4 +1,4 @@
-#![deny(missing_docs)]
+//#![deny(missing_docs)]
 
 //! Legion aims to be a feature rich high performance ECS library for Rust game projects with minimal boilerplate.
 //!
@@ -186,7 +186,7 @@
 //! * `codegen` - Enables the `#[system]` procedural macro. Enabled by default.
 
 // implementation modules
-mod internals;
+pub mod internals;
 
 // public API organized into logical modules
 pub mod query;

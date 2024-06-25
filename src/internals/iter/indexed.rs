@@ -1,5 +1,16 @@
 use std::iter::FusedIterator;
 
+impl<T: TrustedRandomAccess<Item = ()>> TrustedRandomAccessExt<T::Item> for T {
+    fn get(&mut self, index: usize) -> T::Item {
+        unsafe { self.get_unchecked(index) }
+    }
+}
+
+#[allow(dead_code)] // it is not dead used above
+pub trait TrustedRandomAccessExt<T> {
+    fn get(&mut self, index: usize) -> T;
+}
+
 pub unsafe trait TrustedRandomAccess: Sized {
     type Item;
 

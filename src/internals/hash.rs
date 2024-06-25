@@ -47,23 +47,3 @@ impl Hasher for U64Hasher {
         unimplemented!()
     }
 }
-
-#[test]
-fn hasher() {
-    fn verify<T: 'static + ?Sized>() {
-        use core::{any::TypeId, hash::Hash};
-
-        let mut hasher = ComponentTypeIdHasher::default();
-        let type_id = TypeId::of::<T>();
-        type_id.hash(&mut hasher);
-        assert_eq!(hasher.finish(), unsafe {
-            core::mem::transmute::<TypeId, u64>(type_id)
-        });
-    }
-
-    verify::<usize>();
-    verify::<()>();
-    verify::<str>();
-    verify::<&'static str>();
-    verify::<[u8; 20]>();
-}

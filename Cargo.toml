@@ -71,3 +71,9 @@ required-features = ["codegen"]
 [[test]]
 name = "systems_par_for_each"
 required-features = ["parallel"]
+
+
+[[bin]]
+name = "bin"
+path = "src/main.rs"
+
