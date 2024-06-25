@@ -1,6 +1,6 @@
 use std::iter::FusedIterator;
 
-impl<T: TrustedRandomAccess<Item = ()>> TrustedRandomAccessExt<T::Item> for T {
+impl<T: TrustedRandomAccess> TrustedRandomAccessExt<T::Item> for T {
     fn get(&mut self, index: usize) -> T::Item {
         unsafe { self.get_unchecked(index) }
     }

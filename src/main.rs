@@ -1,7 +1,7 @@
 use std::{collections::HashMap, marker::PhantomData};
 
 use legion::{
-    internals::iter::indexed::TrustedRandomAccess,
+    internals::iter::indexed::{TrustedRandomAccess, TrustedRandomAccessExt},
     query::{ChunkView, IntoIndexableIter},
     *,
 };
@@ -37,6 +37,8 @@ fn main() {
             counter += 1;
 
             let mut chunk = chunk.get_indexable();
+
+            chunk.get()
 
             for entity in chunk {
                 entity_counter += 1;
