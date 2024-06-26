@@ -5,6 +5,10 @@ use filter::{DynamicFilter, EntityFilter, GroupMatcher};
 use parking_lot::Mutex;
 use view::{DefaultFilter, Fetch, IntoIndexableIter, IntoView, ReadOnlyFetch, View};
 
+use self::filter::{
+    component::ComponentFilter, not::Not, passthrough::Passthrough, EntityFilterTuple,
+};
+
 use super::{iter::indexed::TrustedRandomAccess, world::EntityAccessError};
 use crate::internals::{
     entity::Entity,
@@ -23,10 +27,21 @@ pub mod view;
 pub trait IntoQuery: IntoView + Sized {
     /// Constructs a query.
     fn query() -> Query<Self, <Self::View as DefaultFilter>::Filter>;
+    fn query_custom() -> Query<Self, <Self::View as DefaultFilter>::Filter>;
 }
 
 impl<T: IntoView> IntoQuery for T {
     fn query() -> Query<Self, <Self::View as DefaultFilter>::Filter> {
+        Self::View::validate();
+
+        Query {
+            _view: PhantomData,
+            filter: Mutex::new(<<Self::View as DefaultFilter>::Filter as Default>::default()),
+            layout_matches: HashMap::new(),
+            is_view_filter: true,
+        }
+    }
+    fn query_custom() -> Query<Self, <Self::View as DefaultFilter>::Filter> {
         Self::View::validate();
 
         Query {
@@ -112,7 +127,7 @@ impl<'a> QueryResult<'a> {
 }
 
 #[derive(Debug, Clone)]
-enum Cache {
+pub enum Cache {
     Unordered {
         archetypes: Vec<ArchetypeIndex>,
         seen: usize,
@@ -123,14 +138,16 @@ enum Cache {
     },
 }
 
+pub struct IBetYouDontKnowShitAboutThisFuckItTurnedOutActuallyIDontNeedThisBecauseICantJustUsePasstroghOnTheFilterButIStillWannaKeepThis;
 /// Provides efficient means to iterate and filter entities in a world.
 ///
 /// See the [module-level documentation](./index.html) for more details and examples.
-pub struct Query<V: IntoView, F: EntityFilter = <<V as IntoView>::View as DefaultFilter>::Filter> {
+pub struct Query<V: IntoView, F: EntityFilter = EntityFilterTuple<Passthrough, Passthrough>> /*<<V as IntoView>::View as DefaultFilter>::Filter> */
+{
     _view: PhantomData<V>,
-    filter: Mutex<F>,
-    layout_matches: HashMap<WorldId, Cache>,
-    is_view_filter: bool,
+    pub filter: Mutex<F>,
+    pub layout_matches: HashMap<WorldId, Cache>,
+    pub is_view_filter: bool,
 }
 
 impl<V: IntoView, F: EntityFilter> Default for Query<V, F> {
@@ -151,6 +168,7 @@ impl<V: IntoView, F: EntityFilter> Query<V, F> {
             is_view_filter: true,
         }
     }
+    pub fn custom(self) {}
 
     /// Adds an additional filter to the query.
     pub fn filter<T: EntityFilter>(self, filter: T) -> Query<V, <F as std::ops::BitAnd<T>>::Output>

@@ -57,12 +57,10 @@ impl FilterResult {
     #[inline]
     pub fn coalesce_and(self, other: Self) -> Self {
         match self {
-            Self::Match(success) => {
-                match other {
-                    Self::Match(other_success) => Self::Match(success && other_success),
-                    Self::Defer => Self::Match(success),
-                }
-            }
+            Self::Match(success) => match other {
+                Self::Match(other_success) => Self::Match(success && other_success),
+                Self::Defer => Self::Match(success),
+            },
             Self::Defer => other,
         }
     }
@@ -71,12 +69,10 @@ impl FilterResult {
     #[inline]
     pub fn coalesce_or(self, other: Self) -> Self {
         match self {
-            Self::Match(success) => {
-                match other {
-                    Self::Match(other_success) => Self::Match(success || other_success),
-                    Self::Defer => Self::Match(success),
-                }
-            }
+            Self::Match(success) => match other {
+                Self::Match(other_success) => Self::Match(success || other_success),
+                Self::Defer => Self::Match(success),
+            },
             Self::Defer => other,
         }
     }
@@ -176,7 +172,6 @@ impl<T: EntityFilter> GroupMatcher for T {
     }
 }
 
-#[doc(hidden)]
 #[derive(Clone, Default)]
 pub struct EntityFilterTuple<L: LayoutFilter, F: DynamicFilter> {
     pub layout_filter: L,
