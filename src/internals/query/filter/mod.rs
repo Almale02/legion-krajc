@@ -1,7 +1,16 @@
 //! Defines all filter types. Filters are a component of [queries](../index.html).
 
+use std::alloc::Layout;
+
 use super::view::Fetch;
-use crate::internals::{storage::component::ComponentTypeId, world::WorldId};
+use crate::{
+    internals::{
+        query::filter::{component::ComponentFilter, passthrough::Passthrough},
+        storage::component::ComponentTypeId,
+        world::WorldId,
+    },
+    storage::Component,
+};
 
 pub mod and;
 pub mod any;

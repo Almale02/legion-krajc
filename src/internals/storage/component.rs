@@ -6,6 +6,8 @@ use std::{
     hash::Hasher,
 };
 
+use crate::internals::query::filter::{ActiveFilter, GroupMatcher};
+
 use super::{packed::PackedStorage, ComponentStorage};
 
 /// A unique ID for a component type.

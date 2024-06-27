@@ -1,4 +1,4 @@
-use std::{collections::HashMap, marker::PhantomData};
+use std::{collections::HashMap, marker::PhantomData, ops::BitAnd};
 
 use crossbeam_channel::ReadyTimeoutError;
 use legion::{
@@ -8,7 +8,6 @@ use legion::{
             filter::component, view::IntoView,
             IBetYouDontKnowShitAboutThisFuckItTurnedOutActuallyIDontNeedThisBecauseICantJustUsePasstroghOnTheFilterButIStillWannaKeepThis,
         },
-        storage::component,
     },
     query::{
         And, ChunkView, ComponentFilter, DefaultFilter, DynamicFilter, EntityFilter,
@@ -18,25 +17,6 @@ use legion::{
     *,
 };
 use rayon::iter::IntoParallelIterator;
-
-trait GetShit {
-    fn get_it<A: Iterator + DefaultFilter + IntoView, T: EntityFilter>()
-    where
-        A: std::ops::BitAnd<T>,
-        <A as std::ops::BitAnd<T>>::Output: EntityFilter + IntoView + Iterator + DefaultFilter;
-}
-
-impl GetShit for i32 {
-    fn get_it<A: IntoView + DefaultFilter, T: EntityFilter>() {
-        let def2 = <Query<
-            A,
-            EntityFilterTuple<Not<ComponentFilter<IBetYouDontKnowShitAboutThisFuckItTurnedOutActuallyIDontNeedThisBecauseICantJustUsePasstroghOnTheFilterButIStillWannaKeepThis>>, Passthrough>,
-        >>::new();
-
-        let def3 = <Query<A, EntityFilterTuple<Passthrough, Passthrough>>>::new()
-            .filter(!component::<Pos>());
-    }
-}
 
 fn main() {
     let mut world = World::default();
