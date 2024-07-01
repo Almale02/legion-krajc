@@ -1,7 +1,3 @@
-#![feature(negative_impls)]
-#![feature(negative_bounds)]
-
-
 /*
 #![deny(missing_docs)]
 
@@ -207,8 +203,8 @@ pub mod serialize;
 // re-export most common types into the root
 #[cfg(feature = "codegen")]
 pub use legion_codegen::system;
-use query::{EntityFilter, FilterResult, LayoutFilter};
-use storage::{ComponentSource, ComponentTypeId};
+use query::{ComponentFilter, EntityFilter, FilterResult, LayoutFilter, Passthrough};
+use storage::{Component, ComponentSource, ComponentTypeId};
 
 #[cfg(feature = "serialize")]
 pub use crate::serialize::Registry;

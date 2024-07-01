@@ -1,6 +1,3 @@
-#![feature(negative_bounds)]
-#![feature(negative_impls)]
-
 use std::{collections::HashMap, marker::PhantomData, ops::BitAnd};
 
 use crossbeam_channel::ReadyTimeoutError;
@@ -21,7 +18,6 @@ use legion::{
 };
 use rayon::iter::IntoParallelIterator;
 
-impl<T: ?Sized> !Test for &T {}
 fn main() {
     let mut world = World::default();
 
@@ -32,7 +28,7 @@ fn main() {
         vector.push((Pos(i as f32, 0., 0.), Rot(0., i as f32, 0.)))
     }
     for i in 0..9999999 {
-  !      vector2.push((
+        vector2.push((
             Pos(i as f32, 0., 0.),
             Rot(0., i as f32, 0.),
             Vel(0., 0., i as f32),
