@@ -1,4 +1,9 @@
-//#![deny(missing_docs)]
+#![feature(negative_impls)]
+#![feature(negative_bounds)]
+
+
+/*
+#![deny(missing_docs)]
 
 //! Legion aims to be a feature rich high performance ECS library for Rust game projects with minimal boilerplate.
 //!
@@ -178,7 +183,7 @@
 //!
 //! # Feature Flags
 //!
-//! Legion provides a few feature flags:  
+//! Legion provides a few feature flags:
 //! * `parallel` - Enables parallel iterators and parallel schedule execution via the rayon library. Enabled by default.
 //! * `extended-tuple-impls` - Extends the maximum size of view and component tuples from 8 to 24, at the cost of increased compile times. Off by default.
 //! * `serialize` - Enables the serde serialization module and associated functionality. Enabled by default.
@@ -186,6 +191,8 @@
 //! * `codegen` - Enables the `#[system]` procedural macro. Enabled by default.
 
 // implementation modules
+
+*/
 pub mod internals;
 
 // public API organized into logical modules
@@ -200,6 +207,8 @@ pub mod serialize;
 // re-export most common types into the root
 #[cfg(feature = "codegen")]
 pub use legion_codegen::system;
+use query::{EntityFilter, FilterResult, LayoutFilter};
+use storage::{ComponentSource, ComponentTypeId};
 
 #[cfg(feature = "serialize")]
 pub use crate::serialize::Registry;
@@ -212,3 +221,9 @@ pub use crate::{
     systems::{Resources, Schedule, SystemBuilder},
     world::{Entity, EntityStore, World, WorldOptions},
 };
+
+/*impl<T: ComponentSource + !EntityFilter> LayoutFilter for T {
+    fn matches_layout(&self, components: &[storage::ComponentTypeId]) -> query::FilterResult {
+        FilterResult::Match(components.contains(&ComponentTypeId::of::<T>()))
+    }
+}*/

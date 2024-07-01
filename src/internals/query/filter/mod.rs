@@ -1,6 +1,6 @@
 //! Defines all filter types. Filters are a component of [queries](../index.html).
 
-use std::alloc::Layout;
+use std::{alloc::Layout, marker::PhantomData};
 
 use super::view::Fetch;
 use crate::{
@@ -23,8 +23,8 @@ pub mod try_component;
 
 pub mod filter_fns {
     use super::{
-        any::Any, component::ComponentFilter, maybe_changed::ComponentChangedFilter,
-        passthrough::Passthrough, try_component::TryComponentFilter, EntityFilterTuple,
+        any::Any, component::ComponentFilter, maybe_changed::Changed, passthrough::Passthrough,
+        try_component::TryComponentFilter, EntityFilterTuple,
     };
     use crate::internals::storage::component::Component;
 
@@ -37,8 +37,7 @@ pub mod filter_fns {
     ///
     /// This check is coarse grained and should be used to reject the majority of entities which have
     /// not changed, but not all entities passed by the filter are guaranteed to have been modified.
-    pub fn maybe_changed<T: Component>(
-    ) -> EntityFilterTuple<TryComponentFilter<T>, ComponentChangedFilter<T>> {
+    pub fn maybe_changed<T: Component>() -> EntityFilterTuple<TryComponentFilter<T>, Changed<T>> {
         Default::default()
     }
 
@@ -66,10 +65,12 @@ impl FilterResult {
     #[inline]
     pub fn coalesce_and(self, other: Self) -> Self {
         match self {
-            Self::Match(success) => match other {
-                Self::Match(other_success) => Self::Match(success && other_success),
-                Self::Defer => Self::Match(success),
-            },
+            Self::Match(success) => {
+                match other {
+                    Self::Match(other_success) => Self::Match(success && other_success),
+                    Self::Defer => Self::Match(success),
+                }
+            }
             Self::Defer => other,
         }
     }
@@ -78,10 +79,12 @@ impl FilterResult {
     #[inline]
     pub fn coalesce_or(self, other: Self) -> Self {
         match self {
-            Self::Match(success) => match other {
-                Self::Match(other_success) => Self::Match(success || other_success),
-                Self::Defer => Self::Match(success),
-            },
+            Self::Match(success) => {
+                match other {
+                    Self::Match(other_success) => Self::Match(success || other_success),
+                    Self::Defer => Self::Match(success),
+                }
+            }
             Self::Defer => other,
         }
     }
@@ -182,10 +185,12 @@ impl<T: EntityFilter> GroupMatcher for T {
 }
 
 #[derive(Clone, Default)]
-pub struct EntityFilterTuple<L: LayoutFilter, F: DynamicFilter> {
+pub struct EntityFilterTuple<L: LayoutFilter, F: DynamicFilter = Passthrough> {
     pub layout_filter: L,
     pub dynamic_filter: F,
 }
+
+//impl<T: ComponentMarker> !EntityFilter for T {}
 
 impl<L, F> EntityFilter for EntityFilterTuple<L, F>
 where

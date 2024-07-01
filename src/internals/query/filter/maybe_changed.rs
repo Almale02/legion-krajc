@@ -10,7 +10,7 @@ use crate::internals::{query::view::Fetch, storage::component::Component, world:
 /// This filter will reject _most_ components which have not
 /// been changed, but not all.
 #[derive(Debug)]
-pub struct ComponentChangedFilter<T: Component> {
+pub struct Changed<T: Component> {
     _phantom: PhantomData<T>,
     history: HashMap<WorldId, u64>,
     world: Option<WorldId>,
@@ -18,7 +18,7 @@ pub struct ComponentChangedFilter<T: Component> {
     maximum: u64,
 }
 
-impl<T: Component> Default for ComponentChangedFilter<T> {
+impl<T: Component> Default for Changed<T> {
     fn default() -> Self {
         Self {
             _phantom: PhantomData,
@@ -30,7 +30,7 @@ impl<T: Component> Default for ComponentChangedFilter<T> {
     }
 }
 
-impl<T: Component> Clone for ComponentChangedFilter<T> {
+impl<T: Component> Clone for Changed<T> {
     fn clone(&self) -> Self {
         Self {
             _phantom: PhantomData,
@@ -42,9 +42,9 @@ impl<T: Component> Clone for ComponentChangedFilter<T> {
     }
 }
 
-impl<T: Component> ActiveFilter for ComponentChangedFilter<T> {}
+impl<T: Component> ActiveFilter for Changed<T> {}
 
-impl<T: Component> DynamicFilter for ComponentChangedFilter<T> {
+impl<T: Component> DynamicFilter for Changed<T> {
     fn prepare(&mut self, world: WorldId) {
         if let Some(world) = self.world {
             self.history.insert(world, self.maximum);
@@ -67,7 +67,7 @@ impl<T: Component> DynamicFilter for ComponentChangedFilter<T> {
     }
 }
 
-impl<T: Component> std::ops::Not for ComponentChangedFilter<T> {
+impl<T: Component> std::ops::Not for Changed<T> {
     type Output = Not<Self>;
 
     #[inline]
@@ -76,7 +76,7 @@ impl<T: Component> std::ops::Not for ComponentChangedFilter<T> {
     }
 }
 
-impl<'a, T: Component, Rhs: ActiveFilter> std::ops::BitAnd<Rhs> for ComponentChangedFilter<T> {
+impl<'a, T: Component, Rhs: ActiveFilter> std::ops::BitAnd<Rhs> for Changed<T> {
     type Output = And<(Self, Rhs)>;
 
     #[inline]
@@ -87,7 +87,7 @@ impl<'a, T: Component, Rhs: ActiveFilter> std::ops::BitAnd<Rhs> for ComponentCha
     }
 }
 
-impl<'a, T: Component> std::ops::BitAnd<Passthrough> for ComponentChangedFilter<T> {
+impl<'a, T: Component> std::ops::BitAnd<Passthrough> for Changed<T> {
     type Output = Self;
 
     #[inline]
@@ -96,7 +96,7 @@ impl<'a, T: Component> std::ops::BitAnd<Passthrough> for ComponentChangedFilter<
     }
 }
 
-impl<'a, T: Component, Rhs: ActiveFilter> std::ops::BitOr<Rhs> for ComponentChangedFilter<T> {
+impl<'a, T: Component, Rhs: ActiveFilter> std::ops::BitOr<Rhs> for Changed<T> {
     type Output = Or<(Self, Rhs)>;
 
     #[inline]
@@ -107,7 +107,7 @@ impl<'a, T: Component, Rhs: ActiveFilter> std::ops::BitOr<Rhs> for ComponentChan
     }
 }
 
-impl<'a, T: Component> std::ops::BitOr<Passthrough> for ComponentChangedFilter<T> {
+impl<'a, T: Component> std::ops::BitOr<Passthrough> for Changed<T> {
     type Output = Self;
 
     #[inline]

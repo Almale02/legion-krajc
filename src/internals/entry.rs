@@ -88,11 +88,9 @@ impl<'a> EntryRef<'a> {
             .get_downcast::<T>()
             .and_then(move |storage| storage.get(archetype))
             .and_then(move |slice| slice.into_slice().get(component.0))
-            .ok_or_else(|| {
-                ComponentError::NotFound {
-                    component_type,
-                    component_name: std::any::type_name::<T>(),
-                }
+            .ok_or_else(|| ComponentError::NotFound {
+                component_type,
+                component_name: std::any::type_name::<T>(),
             })
     }
 
@@ -118,11 +116,9 @@ impl<'a> EntryRef<'a> {
             .get_downcast::<T>()
             .and_then(move |storage| storage.get_mut(archetype))
             .and_then(move |slice| slice.into_slice().get_mut(component.0))
-            .ok_or_else(|| {
-                ComponentError::NotFound {
-                    component_type,
-                    component_name: std::any::type_name::<T>(),
-                }
+            .ok_or_else(|| ComponentError::NotFound {
+                component_type,
+                component_name: std::any::type_name::<T>(),
             })
     }
 
@@ -142,11 +138,9 @@ impl<'a> EntryRef<'a> {
             .get_downcast::<T>()
             .and_then(move |storage| storage.get(archetype))
             .and_then(move |slice| slice.into_slice().get(component.0))
-            .ok_or_else(|| {
-                ComponentError::NotFound {
-                    component_type,
-                    component_name: std::any::type_name::<T>(),
-                }
+            .ok_or_else(|| ComponentError::NotFound {
+                component_type,
+                component_name: std::any::type_name::<T>(),
             })
     }
 
@@ -170,11 +164,9 @@ impl<'a> EntryRef<'a> {
             .get_downcast::<T>()
             .and_then(move |storage| storage.get_mut(archetype))
             .and_then(move |slice| slice.into_slice().get_mut(component.0))
-            .ok_or_else(|| {
-                ComponentError::NotFound {
-                    component_type,
-                    component_name: std::any::type_name::<T>(),
-                }
+            .ok_or_else(|| ComponentError::NotFound {
+                component_type,
+                component_name: std::any::type_name::<T>(),
             })
     }
 }
@@ -228,11 +220,9 @@ impl<'a> EntryMut<'a> {
             .get_downcast::<T>()
             .and_then(move |storage| storage.get(archetype))
             .and_then(move |slice| slice.into_slice().get(component.0))
-            .ok_or_else(|| {
-                ComponentError::NotFound {
-                    component_type,
-                    component_name: std::any::type_name::<T>(),
-                }
+            .ok_or_else(|| ComponentError::NotFound {
+                component_type,
+                component_name: std::any::type_name::<T>(),
             })
     }
 
@@ -258,11 +248,9 @@ impl<'a> EntryMut<'a> {
             .get_downcast::<T>()
             .and_then(move |storage| storage.get_mut(archetype))
             .and_then(move |slice| slice.into_slice().get_mut(component.0))
-            .ok_or_else(|| {
-                ComponentError::NotFound {
-                    component_type,
-                    component_name: std::any::type_name::<T>(),
-                }
+            .ok_or_else(|| ComponentError::NotFound {
+                component_type,
+                component_name: std::any::type_name::<T>(),
             })
     }
 
@@ -292,11 +280,9 @@ impl<'a> EntryMut<'a> {
             .get_downcast::<T>()
             .and_then(move |storage| storage.get(archetype))
             .and_then(move |slice| slice.into_slice().get(component.0))
-            .ok_or_else(|| {
-                ComponentError::NotFound {
-                    component_type,
-                    component_name: std::any::type_name::<T>(),
-                }
+            .ok_or_else(|| ComponentError::NotFound {
+                component_type,
+                component_name: std::any::type_name::<T>(),
             })
     }
 
@@ -322,11 +308,9 @@ impl<'a> EntryMut<'a> {
             .get_downcast::<T>()
             .and_then(move |storage| storage.get_mut(archetype))
             .and_then(move |slice| slice.into_slice().get_mut(component.0))
-            .ok_or_else(|| {
-                ComponentError::NotFound {
-                    component_type,
-                    component_name: std::any::type_name::<T>(),
-                }
+            .ok_or_else(|| ComponentError::NotFound {
+                component_type,
+                component_name: std::any::type_name::<T>(),
             })
     }
 
@@ -368,11 +352,9 @@ impl<'a> Entry<'a> {
             .get_downcast::<T>()
             .and_then(move |storage| storage.get(archetype))
             .and_then(move |slice| slice.into_slice().get(component.0))
-            .ok_or_else(|| {
-                ComponentError::NotFound {
-                    component_type: ComponentTypeId::of::<T>(),
-                    component_name: std::any::type_name::<T>(),
-                }
+            .ok_or_else(|| ComponentError::NotFound {
+                component_type: ComponentTypeId::of::<T>(),
+                component_name: std::any::type_name::<T>(),
             })
     }
 
@@ -397,11 +379,9 @@ impl<'a> Entry<'a> {
             .get_downcast::<T>()
             .and_then(move |storage| storage.get_mut(archetype))
             .and_then(move |slice| slice.into_slice().get_mut(component.0))
-            .ok_or_else(|| {
-                ComponentError::NotFound {
-                    component_type: ComponentTypeId::of::<T>(),
-                    component_name: std::any::type_name::<T>(),
-                }
+            .ok_or_else(|| ComponentError::NotFound {
+                component_type: ComponentTypeId::of::<T>(),
+                component_name: std::any::type_name::<T>(),
             })
     }
 
@@ -414,11 +394,9 @@ impl<'a> Entry<'a> {
             .get_downcast::<T>()
             .and_then(move |storage| storage.get(archetype))
             .and_then(move |slice| slice.into_slice().get(component.0))
-            .ok_or_else(|| {
-                ComponentError::NotFound {
-                    component_type: ComponentTypeId::of::<T>(),
-                    component_name: std::any::type_name::<T>(),
-                }
+            .ok_or_else(|| ComponentError::NotFound {
+                component_type: ComponentTypeId::of::<T>(),
+                component_name: std::any::type_name::<T>(),
             })
     }
 
@@ -441,11 +419,9 @@ impl<'a> Entry<'a> {
             .get_downcast::<T>()
             .and_then(move |storage| storage.get_mut(archetype))
             .and_then(move |slice| slice.into_slice().get_mut(component.0))
-            .ok_or_else(|| {
-                ComponentError::NotFound {
-                    component_type: ComponentTypeId::of::<T>(),
-                    component_name: std::any::type_name::<T>(),
-                }
+            .ok_or_else(|| ComponentError::NotFound {
+                component_type: ComponentTypeId::of::<T>(),
+                component_name: std::any::type_name::<T>(),
             })
     }
 

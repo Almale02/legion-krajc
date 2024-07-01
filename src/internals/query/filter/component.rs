@@ -1,8 +1,8 @@
 use std::marker::PhantomData;
 
 use super::{
-    and::And, not::Not, or::Or, passthrough::Passthrough, ActiveFilter, FilterResult, GroupMatcher,
-    LayoutFilter,
+    and::And, not::Not, or::Or, passthrough::Passthrough, ActiveFilter, EntityFilter, FilterResult,
+    GroupMatcher, LayoutFilter,
 };
 use crate::internals::storage::component::{Component, ComponentTypeId};
 
@@ -39,6 +39,12 @@ impl<T: Component> LayoutFilter for ComponentFilter<T> {
         FilterResult::Match(components.contains(&ComponentTypeId::of::<T>()))
     }
 }
+
+/*impl<T: Component> LayoutFilter for T {
+    fn matches_layout(&self, components: &[ComponentTypeId]) -> FilterResult {
+        FilterResult::Match(components.contains(&ComponentTypeId::of::<T>()))
+    }
+}*/
 
 impl<T: Component> std::ops::Not for ComponentFilter<T> {
     type Output = Not<Self>;

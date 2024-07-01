@@ -29,6 +29,7 @@ use super::{
     },
     subworld::{ComponentAccess, SubWorld},
 };
+use crate::query::{ComponentFilter, Passthrough};
 
 type MapEntry<'a, K, V> = std::collections::hash_map::Entry<'a, K, V>;
 
@@ -91,6 +92,23 @@ pub struct WorldOptions {
 /// arbitrary collection of [`Component`]s attached.
 ///
 /// The entities in a world may be efficiently searched and iterated via [queries](crate::query).
+
+pub trait Comp: Sync + Component + Send + Default {}
+
+impl<T: Comp> EntityFilter for T {
+    type Layout = ComponentFilter<T>;
+    type Dynamic = Passthrough;
+    fn layout_filter(&self) -> &Self::Layout {
+        Box::leak(Box::new(<ComponentFilter<T>>::default()))
+    }
+    fn filters(&mut self) -> (&Self::Layout, &mut Self::Dynamic) {
+        (
+            Box::leak(Box::new(<ComponentFilter<T>>::default())),
+            Box::leak(Box::new(Passthrough::default())),
+        )
+    }
+}
+
 #[derive(Debug)]
 pub struct World {
     id: WorldId,

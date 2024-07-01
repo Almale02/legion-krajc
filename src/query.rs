@@ -88,7 +88,7 @@ pub use crate::internals::query::{
         any::Any,
         component::ComponentFilter,
         filter_fns::{any, component, maybe_changed, passthrough},
-        maybe_changed::ComponentChangedFilter,
+        maybe_changed::Changed,
         not::Not,
         or::Or,
         passthrough::Passthrough,
