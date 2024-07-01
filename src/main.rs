@@ -34,32 +34,25 @@ fn main() {
             Vel(0., 0., i as f32),
         ))
     }
-    let components = vector;
-    let components2 = vector2;
+    world.extend(vector.clone());
+    world.extend(vector2.clone());
 
-    world.extend(components.clone());
-    world.extend(components2.clone());
-    let q = <Read<Pos>>::query().filter(!(component::<Pos>() & !component::<Rot>()));
-    let mut query = <(Read<Pos>)>::query().filter(!(component::<Pos>() & !component::<Rot>()));
+    let mut query =
+        <Read<Pos>>::query().filter(<EntityFilterTuple<Passthrough, Passthrough>>::default());
+    let mut counter = 0;
+    let mut entity_counter = 0;
 
-    let mut query = <(Read<Pos>, Entity)>::query().filter(component::<Entity>());
-    unsafe {
-        let mut counter = 0;
-        let mut entity_counter = 0;
-        for chunk in query.iter_chunks_unchecked(&world) {
-            counter += 1;
+    for chunk in query.iter_chunks(&world) {
+        counter += 1;
 
-            let mut chunk = chunk.get_indexable();
+        let chunk = chunk.get_indexable();
 
-            let a = chunk.get(3);
-
-            for entity in chunk {
-                entity_counter += 1;
-            }
+        for _entity in chunk {
+            entity_counter += 1;
         }
-        dbg!(counter);
-        dbg!(entity_counter);
     }
+    dbg!(counter);
+    dbg!(entity_counter);
 }
 #[derive(Clone, Copy, Debug, PartialEq)]
 struct Pos(f32, f32, f32);

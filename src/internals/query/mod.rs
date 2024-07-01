@@ -8,7 +8,6 @@ use view::{DefaultFilter, Fetch, IntoIndexableIter, IntoView, ReadOnlyFetch, Vie
 use self::filter::{
     component::ComponentFilter, not::Not, passthrough::Passthrough, EntityFilterTuple,
 };
-
 use super::{iter::indexed::TrustedRandomAccess, world::EntityAccessError};
 use crate::internals::{
     entity::Entity,
@@ -36,7 +35,7 @@ impl<T: IntoView> IntoQuery for T {
 
         Query {
             _view: PhantomData,
-            filter: Mutex::new(<<Self::View as DefaultFilter>::Filter as Default>::default()),
+            filter: Mutex::new(<<Self::View as DefaultFilter>::Filter>::default()),
             layout_matches: HashMap::new(),
             is_view_filter: true,
         }
@@ -217,9 +216,11 @@ impl<V: IntoView, F: EntityFilter> Query<V, F> {
             };
 
             // else use an unordered result
-            cache.unwrap_or_else(|| Cache::Unordered {
-                archetypes: Vec::new(),
-                seen: 0,
+            cache.unwrap_or_else(|| {
+                Cache::Unordered {
+                    archetypes: Vec::new(),
+                    seen: 0,
+                }
             })
         });
 
